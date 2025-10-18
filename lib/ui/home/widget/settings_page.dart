@@ -71,7 +71,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     icon: Icons.vpn_key_outlined,
                     title: 'Método de Acceso',
                     subtitle: selectedAccessMethod,
-                    trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+                    trailing: const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                    ),
                     onTap: _showAccessMethodDialog,
                   ),
                 ],
@@ -87,7 +90,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     value: notificationsEnabled,
                     onChanged: (value) {
                       setState(() => notificationsEnabled = value);
-                      _showSnackBar('Notificaciones ${value ? 'activadas' : 'desactivadas'}');
+                      _showSnackBar(
+                        'Notificaciones ${value ? 'activadas' : 'desactivadas'}',
+                      );
                     },
                   ),
                   _buildSwitchTile(
@@ -108,7 +113,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: 'Auto-Bloqueo',
                     subtitle: 'Después de $autoLockDuration segundos',
                     value: autoLockEnabled,
-                    onChanged: (value) => setState(() => autoLockEnabled = value),
+                    onChanged: (value) =>
+                        setState(() => autoLockEnabled = value),
                   ),
                   if (autoLockEnabled)
                     Slider(
@@ -118,7 +124,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       divisions: 11,
                       label: '$autoLockDuration s',
                       activeColor: const Color(0xFF3B82F6),
-                      onChanged: (value) => setState(() => autoLockDuration = value.round()),
+                      onChanged: (value) =>
+                          setState(() => autoLockDuration = value.round()),
                     ),
                   _buildListTile(
                     icon: Icons.lock_outline,
@@ -162,11 +169,16 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 20),
               OutlinedButton.icon(
                 icon: const Icon(Icons.restore, color: Colors.red),
-                label: const Text('Restablecer Configuración', style: TextStyle(color: Colors.red)),
+                label: const Text(
+                  'Restablecer Configuración',
+                  style: TextStyle(color: Colors.red),
+                ),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Colors.red),
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: _showResetDialog,
               ),
@@ -177,13 +189,22 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildSettingsCard({required String title, required List<Widget> children}) {
+  Widget _buildSettingsCard({
+    required String title,
+    required List<Widget> children,
+  }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -194,7 +215,11 @@ class _SettingsPageState extends State<SettingsPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Text(
                 title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey.shade700),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: Colors.grey.shade700,
+                ),
               ),
             ),
             ...children,
@@ -204,14 +229,22 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget _buildListTile({required IconData icon, required String title, String? subtitle, Widget? trailing, required VoidCallback onTap}) {
+  Widget _buildListTile({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    required VoidCallback onTap,
+  }) {
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: Colors.blue.withOpacity(0.1),
         child: Icon(icon, color: Colors.blue),
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-      subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: Colors.grey.shade600)) : null,
+      subtitle: subtitle != null
+          ? Text(subtitle, style: TextStyle(color: Colors.grey.shade600))
+          : null,
       trailing: trailing,
       onTap: onTap,
     );
@@ -230,7 +263,9 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Icon(icon, color: Colors.blue),
       ),
       title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-      subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: Colors.grey.shade600)) : null,
+      subtitle: subtitle != null
+          ? Text(subtitle, style: TextStyle(color: Colors.grey.shade600))
+          : null,
       activeColor: const Color(0xFF3B82F6),
       value: value,
       onChanged: onChanged,
@@ -239,13 +274,15 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Métodos funcionales (igual que en tu versión previa)
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      behavior: SnackBarBehavior.floating,
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
   }
 
-  void _showManageUsersDialog() => Navigator.push(context, MaterialPageRoute(builder: (_) => const UsersManagerPage()));
+  void _showManageUsersDialog() => Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const UsersManagerPage()),
+  );
   void _showAccessMethodDialog() {}
   void _showFingerprintDialog() {}
   void _testLockConnection() {}
