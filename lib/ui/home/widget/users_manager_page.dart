@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartlock/ui/home/widget/scheduled_access_page.dart';
 
 class UsersManagerPage extends StatefulWidget {
   const UsersManagerPage({super.key});
@@ -223,6 +224,16 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                     ],
                   ),
                   onTap: () => _showPermissionsDialog(user),
+                ),
+                PopupMenuItem(
+                  child: Row(
+                    children: [
+                      Icon(Icons.schedule, size: 20),
+                      SizedBox(width: 12),
+                      Text('Horario de Acceso'),
+                    ],
+                  ),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ScheduledAccessPage(user: user))),
                 ),
                 PopupMenuItem(
                   child: Row(

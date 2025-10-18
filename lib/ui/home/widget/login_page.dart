@@ -137,83 +137,31 @@ class _LoginPageState extends State<LoginPage> {
                         padding: const EdgeInsets.all(30),
                         child: Column(
                           children: [
-                            // Campo de email
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: TextField(
-                                controller: emailController,
-                                style: const TextStyle(
-                                  color: Color(0xFF1E3A8A),
-                                ),
-                                decoration: InputDecoration(
-                                  labelText: 'Correo Electrónico',
-                                  labelStyle: TextStyle(
-                                    color: const Color(
-                                      0xFF1E3A8A,
-                                    ).withOpacity(0.7),
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.email_outlined,
-                                    color: Color(0xFF3B82F6),
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.transparent,
-                                ),
-                              ),
+                            _buildTextField(
+                              controller: emailController,
+                              labelText: "Correo Electrónico",
+                              icon: Icons.email_outlined,
                             ),
 
                             const SizedBox(height: 20),
 
-                            // Campo de contraseña
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: TextField(
-                                controller: passController,
-                                obscureText: _obscurePassword,
-                                style: const TextStyle(
-                                  color: Color(0xFF1E3A8A),
+                            _buildTextField(
+                              controller: passController,
+                              labelText: "Contraseña",
+                              icon: Icons.lock_outline,
+                              obscureText: _obscurePassword,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: Colors.white.withOpacity(0.7),
                                 ),
-                                decoration: InputDecoration(
-                                  labelText: 'Contraseña',
-                                  labelStyle: TextStyle(
-                                    color: const Color(
-                                      0xFF1E3A8A,
-                                    ).withOpacity(0.7),
-                                  ),
-                                  prefixIcon: const Icon(
-                                    Icons.lock_outline,
-                                    color: Color(0xFF3B82F6),
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _obscurePassword
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: Color(0xFF3B82F6),
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _obscurePassword = !_obscurePassword;
-                                      });
-                                    },
-                                  ),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.transparent,
-                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
                               ),
                             ),
 
@@ -350,6 +298,41 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String labelText,
+    required IconData icon,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        style: const TextStyle(color: Colors.white, fontSize: 16),
+        decoration: InputDecoration(
+          labelText: labelText,
+          labelStyle: TextStyle(
+            color: Colors.white.withOpacity(0.7),
+            fontSize: 14,
+          ),
+          prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.7)),
+          suffixIcon: suffixIcon,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 18.0,
+            horizontal: 20.0,
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartlock/ui/home/widget/geofence_page.dart';
 import 'users_manager_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -132,6 +133,15 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: 'Probar Cerradura',
                     subtitle: 'Verificar tu conexión Smart Lock',
                     onTap: _testLockConnection,
+                  ),
+                  _buildListTile(
+                    icon: Icons.location_on_outlined,
+                    title: 'Geofencing (Auto-Acceso)',
+                    subtitle: 'Bloquea/desbloquea al acercarte',
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const GeofencePage()));
+                    },
                   ),
                   _buildListTile(
                     icon: Icons.security,

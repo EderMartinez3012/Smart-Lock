@@ -5,6 +5,8 @@ import 'login_page.dart';
 import 'history_page.dart';
 import 'settings_page.dart';
 import 'users_manager_page.dart';
+import 'guest_access_page.dart';
+import 'analytics_page.dart';
 
 class UnlockPage extends StatefulWidget {
   final Lock lock;
@@ -234,6 +236,40 @@ class _UnlockPageState extends State<UnlockPage>
                                   icon: Icons.notifications_active,
                                   label: 'Alertas',
                                   onTap: _showAlertsDialog,
+                                ),
+                                Container(
+                                  width: 1,
+                                  height: 40,
+                                  color: Colors.white.withOpacity(0.2),
+                                ),
+                                _buildQuickAction(
+                                  icon: Icons.analytics,
+                                  label: 'Análisis',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const AnalyticsPage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Container(
+                                  width: 1,
+                                  height: 40,
+                                  color: Colors.white.withOpacity(0.2),
+                                ),
+                                _buildQuickAction(
+                                  icon: Icons.qr_code_scanner,
+                                  label: 'Invitado',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const GuestAccessPage(),
+                                      ),
+                                    );
+                                  },
                                 ),
                                 Container(
                                   width: 1,
