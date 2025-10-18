@@ -49,10 +49,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1E3A8A),
-              Color(0xFFF8FAFC),
-            ],
+            colors: [Color(0xFF1E3A8A), Color(0xFFF8FAFC)],
             stops: [0.0, 0.3],
           ),
         ),
@@ -90,7 +87,10 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
@@ -165,10 +165,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
             ),
             title: Text(
               user['name'],
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,17 +173,16 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                 SizedBox(height: 4),
                 Text(
                   user['email'],
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 13,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
                 ),
                 SizedBox(height: 8),
                 Row(
                   children: [
                     _buildBadge(
                       user['role'],
-                      user['role'] == 'Administrador' ? Colors.orange : Colors.blue,
+                      user['role'] == 'Administrador'
+                          ? Colors.orange
+                          : Colors.blue,
                     ),
                     SizedBox(width: 8),
                     Icon(Icons.access_time, size: 12, color: Colors.grey),
@@ -309,11 +305,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon,
-            size: 18,
-            color: enabled ? Colors.green : Colors.grey,
-          ),
+          Icon(icon, size: 18, color: enabled ? Colors.green : Colors.grey),
           SizedBox(width: 6),
           Text(
             label,
@@ -391,10 +383,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                     ),
                   ),
                   items: ['Administrador', 'Usuario'].map((role) {
-                    return DropdownMenuItem(
-                      value: role,
-                      child: Text(role),
-                    );
+                    return DropdownMenuItem(value: role, child: Text(role));
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
@@ -441,14 +430,16 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                 ),
               ),
               onPressed: () {
-                if (nameController.text.isNotEmpty && emailController.text.isNotEmpty) {
+                if (nameController.text.isNotEmpty &&
+                    emailController.text.isNotEmpty) {
                   setState(() {
                     users.add({
                       'name': nameController.text,
                       'email': emailController.text,
                       'role': selectedRole,
                       'avatar': nameController.text[0].toUpperCase(),
-                      'color': Colors.primaries[users.length % Colors.primaries.length],
+                      'color': Colors
+                          .primaries[users.length % Colors.primaries.length],
                       'fingerprint': enableFingerprint,
                       'pin': enablePIN,
                       'lastAccess': 'Nunca',
@@ -482,46 +473,126 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
   }
 
   void _showEditUserDialog(Map<String, dynamic> user, int index) {
-    Future.delayed(Duration(milliseconds: 100), () {
-      final nameController = TextEditingController(text: user['name']);
-      final emailController = TextEditingController(text: user['email']);
+    final nameController = TextEditingController(text: user['name']);
+    final emailController = TextEditingController(text: user['email']);
 
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.edit, color: Color(0xFF3B82F6)),
+            SizedBox(width: 10),
+            Text('Editar Usuario'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Nombre completo',
+                prefixIcon: Icon(Icons.person),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: 'Correo electrónico',
+                prefixIcon: Icon(Icons.email),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancelar'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(0xFF3B82F6),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              setState(() {
+                users[index]['name'] = nameController.text;
+                users[index]['email'] = emailController.text;
+                users[index]['avatar'] = nameController.text[0].toUpperCase();
+              });
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Usuario actualizado'),
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            child: Text('Guardar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPermissionsDialog(Map<String, dynamic> user) {
+    bool fingerprint = user['fingerprint'];
+    bool pin = user['pin'];
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
           title: Row(
             children: [
-              Icon(Icons.edit, color: Color(0xFF3B82F6)),
+              Icon(Icons.security, color: Color(0xFF3B82F6)),
               SizedBox(width: 10),
-              Text('Editar Usuario'),
+              Text('Permisos de Acceso'),
             ],
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Nombre completo',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+              Text(
+                user['name'],
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Correo electrónico',
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+              SizedBox(height: 20),
+              SwitchListTile(
+                title: Text('Huella Digital'),
+                secondary: Icon(Icons.fingerprint),
+                value: fingerprint,
+                activeColor: Color(0xFF3B82F6),
+                onChanged: (value) {
+                  setState(() {
+                    fingerprint = value;
+                  });
+                },
+              ),
+              SwitchListTile(
+                title: Text('Código PIN'),
+                secondary: Icon(Icons.dialpad),
+                value: pin,
+                activeColor: Color(0xFF3B82F6),
+                onChanged: (value) {
+                  setState(() {
+                    pin = value;
+                  });
+                },
               ),
             ],
           ),
@@ -539,14 +610,13 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
               ),
               onPressed: () {
                 setState(() {
-                  users[index]['name'] = nameController.text;
-                  users[index]['email'] = emailController.text;
-                  users[index]['avatar'] = nameController.text[0].toUpperCase();
+                  user['fingerprint'] = fingerprint;
+                  user['pin'] = pin;
                 });
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Usuario actualizado'),
+                    content: Text('Permisos actualizados'),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -555,146 +625,54 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
             ),
           ],
         ),
-      );
-    });
-  }
-
-  void _showPermissionsDialog(Map<String, dynamic> user) {
-    Future.delayed(Duration(milliseconds: 100), () {
-      bool fingerprint = user['fingerprint'];
-      bool pin = user['pin'];
-
-      showDialog(
-        context: context,
-        builder: (context) => StatefulBuilder(
-          builder: (context, setState) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: Row(
-              children: [
-                Icon(Icons.security, color: Color(0xFF3B82F6)),
-                SizedBox(width: 10),
-                Text('Permisos de Acceso'),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  user['name'],
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 20),
-                SwitchListTile(
-                  title: Text('Huella Digital'),
-                  secondary: Icon(Icons.fingerprint),
-                  value: fingerprint,
-                  activeColor: Color(0xFF3B82F6),
-                  onChanged: (value) {
-                    setState(() {
-                      fingerprint = value;
-                    });
-                  },
-                ),
-                SwitchListTile(
-                  title: Text('Código PIN'),
-                  secondary: Icon(Icons.dialpad),
-                  value: pin,
-                  activeColor: Color(0xFF3B82F6),
-                  onChanged: (value) {
-                    setState(() {
-                      pin = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Cancelar'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF3B82F6),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  setState(() {
-                    user['fingerprint'] = fingerprint;
-                    user['pin'] = pin;
-                  });
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Permisos actualizados'),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                },
-                child: Text('Guardar'),
-              ),
-            ],
-          ),
-        ),
-      );
-    });
+      ),
+    );
   }
 
   void _showDeleteDialog(int index) {
-    Future.delayed(Duration(milliseconds: 100), () {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: Row(
-            children: [
-              Icon(Icons.warning, color: Colors.red),
-              SizedBox(width: 10),
-              Text('Eliminar Usuario'),
-            ],
-          ),
-          content: Text(
-            '¿Estás seguro de que deseas eliminar a ${users[index]['name']}? Esta acción no se puede deshacer.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancelar'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: () {
-                setState(() {
-                  users.removeAt(index);
-                });
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Usuario eliminado'),
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              },
-              child: Text('Eliminar'),
-            ),
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.warning, color: Colors.red),
+            SizedBox(width: 10),
+            Text('Eliminar Usuario'),
           ],
         ),
-      );
-    });
+        content: Text(
+          '¿Estás seguro de que deseas eliminar a ${users[index]['name']}? Esta acción no se puede deshacer.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancelar'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
+              setState(() {
+                users.removeAt(index);
+              });
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Usuario eliminado'),
+                  backgroundColor: Colors.red,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+            },
+            child: Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:smartlock/models/lock_model.dart';
+import 'package:smartlock/ui/home/widget/background_design.dart';
 import 'login_page.dart';
 import 'history_page.dart';
 import 'settings_page.dart';
+import 'users_manager_page.dart';
 
 class UnlockPage extends StatefulWidget {
-  const UnlockPage({super.key});
+  final Lock lock;
+  const UnlockPage({super.key, required this.lock});
 
   @override
   State<UnlockPage> createState() => _UnlockPageState();
 }
 
-class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateMixin {
+class _UnlockPageState extends State<UnlockPage>
+    with SingleTickerProviderStateMixin {
   bool isLocked = true;
   late AnimationController _pulseController;
   late Animation<double> _pulseAnimation;
@@ -38,15 +43,12 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
     setState(() {
       isLocked = !isLocked;
     });
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            Icon(
-              isLocked ? Icons.lock : Icons.lock_open,
-              color: Colors.white,
-            ),
+            Icon(isLocked ? Icons.lock : Icons.lock_open, color: Colors.white),
             SizedBox(width: 12),
             Text(
               isLocked ? 'Cerradura Bloqueada' : 'Cerradura Abierta',
@@ -65,46 +67,9 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1E3A8A),
-              Color(0xFF3B82F6),
-              Color(0xFF60A5FA),
-            ],
-          ),
-        ),
+      body: ModernGradientBackground(
         child: Stack(
           children: [
-            // Círculos decorativos
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -150,
-              left: -50,
-              child: Container(
-                width: 350,
-                height: 350,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-
             SafeArea(
               child: Column(
                 children: [
@@ -114,13 +79,31 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'SMART LOCK',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
+                        _buildIconButton(
+                          icon: Icons.arrow_back,
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.lock.name,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                widget.lock.location,
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Row(
@@ -130,7 +113,9 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => const HistoryPage()),
+                                  MaterialPageRoute(
+                                    builder: (_) => const HistoryPage(),
+                                  ),
                                 );
                               },
                             ),
@@ -140,7 +125,9 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => const SettingsPage()),
+                                  MaterialPageRoute(
+                                    builder: (_) => const SettingsPage(),
+                                  ),
                                 );
                               },
                             ),
@@ -156,46 +143,7 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           // Estado de conexión
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.green.withOpacity(0.5),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.green.withOpacity(0.5),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Conectado',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          const ConnectionStatus(isConnected: true),
 
                           const SizedBox(height: 60),
 
@@ -211,10 +159,7 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                                   shape: BoxShape.circle,
                                   gradient: RadialGradient(
                                     colors: isLocked
-                                        ? [
-                                            Color(0xFFEF4444),
-                                            Color(0xFFDC2626),
-                                          ]
+                                        ? [Color(0xFFEF4444), Color(0xFFDC2626)]
                                         : [
                                             Color(0xFF10B981),
                                             Color(0xFF059669),
@@ -222,8 +167,9 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: (isLocked ? Colors.red : Colors.green)
-                                          .withOpacity(0.4),
+                                      color:
+                                          (isLocked ? Colors.red : Colors.green)
+                                              .withOpacity(0.4),
                                       blurRadius: 40,
                                       spreadRadius: 10,
                                     ),
@@ -269,24 +215,15 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                           const SizedBox(height: 60),
 
                           // Tarjeta de accesos rápidos
-                          Container(
+                          GlassCard(
                             margin: EdgeInsets.symmetric(horizontal: 30),
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
-                                width: 1.5,
-                              ),
-                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 _buildQuickAction(
                                   icon: Icons.access_time,
                                   label: 'Temporizador',
-                                  onTap: () {},
+                                  onTap: _showTimerDialog,
                                 ),
                                 Container(
                                   width: 1,
@@ -296,7 +233,7 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                                 _buildQuickAction(
                                   icon: Icons.notifications_active,
                                   label: 'Alertas',
-                                  onTap: () {},
+                                  onTap: _showAlertsDialog,
                                 ),
                                 Container(
                                   width: 1,
@@ -306,7 +243,15 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
                                 _buildQuickAction(
                                   icon: Icons.people,
                                   label: 'Usuarios',
-                                  onTap: () {},
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const UsersManagerPage(),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             ),
@@ -396,15 +341,65 @@ class _UnlockPageState extends State<UnlockPage> with SingleTickerProviderStateM
     );
   }
 
-  Widget _buildIconButton({required IconData icon, required VoidCallback onPressed}) {
+  void _showTimerDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.access_time),
+            SizedBox(width: 10),
+            Text('Temporizador'),
+          ],
+        ),
+        content: Text(
+          'Esta función te permitirá programar bloqueos y desbloqueos automáticos. Próximamente disponible.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Entendido'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAlertsDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(Icons.notifications_active),
+            SizedBox(width: 10),
+            Text('Alertas'),
+          ],
+        ),
+        content: Text(
+          'Aquí podrás configurar y ver las alertas de seguridad, como intentos de acceso fallidos. Próximamente disponible.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Entendido'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIconButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: 1,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
       ),
       child: IconButton(
         icon: Icon(icon, color: Colors.white),

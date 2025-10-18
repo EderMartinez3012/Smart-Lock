@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../controllers/auth_controller.dart';
-import 'auth_page.dart';
+import 'lock_selection_page.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -31,11 +31,7 @@ class _LoginPageState extends State<LoginPage> {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1E3A8A),
-              Color(0xFF3B82F6),
-              Color(0xFF60A5FA),
-            ],
+            colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6), Color(0xFF60A5FA)],
           ),
         ),
         child: Stack(
@@ -65,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            
+
             // Contenido principal
             SafeArea(
               child: Center(
@@ -95,9 +91,9 @@ class _LoginPageState extends State<LoginPage> {
                           color: Color(0xFF3B82F6),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 24),
-                      
+
                       const Text(
                         'SMART LOCK',
                         style: TextStyle(
@@ -107,9 +103,9 @@ class _LoginPageState extends State<LoginPage> {
                           letterSpacing: 3,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 8),
-                      
+
                       Text(
                         'Inicia Sesión',
                         style: TextStyle(
@@ -118,9 +114,9 @@ class _LoginPageState extends State<LoginPage> {
                           fontWeight: FontWeight.w300,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 50),
-                      
+
                       // Tarjeta de login
                       Container(
                         decoration: BoxDecoration(
@@ -149,11 +145,15 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               child: TextField(
                                 controller: emailController,
-                                style: const TextStyle(color: Color(0xFF1E3A8A)),
+                                style: const TextStyle(
+                                  color: Color(0xFF1E3A8A),
+                                ),
                                 decoration: InputDecoration(
                                   labelText: 'Correo Electrónico',
                                   labelStyle: TextStyle(
-                                    color: const Color(0xFF1E3A8A).withOpacity(0.7),
+                                    color: const Color(
+                                      0xFF1E3A8A,
+                                    ).withOpacity(0.7),
                                   ),
                                   prefixIcon: const Icon(
                                     Icons.email_outlined,
@@ -168,9 +168,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            
+
                             const SizedBox(height: 20),
-                            
+
                             // Campo de contraseña
                             Container(
                               decoration: BoxDecoration(
@@ -180,11 +180,15 @@ class _LoginPageState extends State<LoginPage> {
                               child: TextField(
                                 controller: passController,
                                 obscureText: _obscurePassword,
-                                style: const TextStyle(color: Color(0xFF1E3A8A)),
+                                style: const TextStyle(
+                                  color: Color(0xFF1E3A8A),
+                                ),
                                 decoration: InputDecoration(
                                   labelText: 'Contraseña',
                                   labelStyle: TextStyle(
-                                    color: const Color(0xFF1E3A8A).withOpacity(0.7),
+                                    color: const Color(
+                                      0xFF1E3A8A,
+                                    ).withOpacity(0.7),
                                   ),
                                   prefixIcon: const Icon(
                                     Icons.lock_outline,
@@ -212,9 +216,9 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                             ),
-                            
+
                             const SizedBox(height: 30),
-                            
+
                             // Botón de iniciar sesión
                             Container(
                               width: double.infinity,
@@ -229,7 +233,9 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(15),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFFEC4899).withOpacity(0.5),
+                                    color: const Color(
+                                      0xFFEC4899,
+                                    ).withOpacity(0.5),
                                     blurRadius: 15,
                                     offset: const Offset(0, 5),
                                   ),
@@ -245,16 +251,23 @@ class _LoginPageState extends State<LoginPage> {
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (_) => const AuthPage()),
+                                        builder: (_) {
+                                          return const LockSelectionPage();
+                                        },
+                                      ),
                                     );
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: const Text("Credenciales incorrectas"),
+                                        content: const Text(
+                                          "Credenciales incorrectas",
+                                        ),
                                         backgroundColor: Colors.red,
                                         behavior: SnackBarBehavior.floating,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                       ),
                                     );
@@ -281,9 +294,9 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 30),
-                      
+
                       // Olvidaste tu contraseña
                       TextButton(
                         onPressed: () {},
@@ -296,9 +309,9 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 20),
-                      
+
                       // Crear cuenta
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -315,7 +328,8 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const RegisterPage()),
+                                  builder: (_) => const RegisterPage(),
+                                ),
                               );
                             },
                             child: const Text(

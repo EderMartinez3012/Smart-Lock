@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'unlock_page.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
+import 'lock_selection_page.dart';
+import 'login_page.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -11,16 +14,15 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
   late AnimationController _pulseController;
-  late AnimationController _scanController;
   late Animation<double> _pulseAnimation;
-  late Animation<double> _scanAnimation;
-  bool _isScanning = false;
-  int _attempts = 0;
+  final LocalAuthentication auth = LocalAuthentication();
+  String _statusMessage = 'Usa tu huella digital para continuar';
+  bool _isAuthenticating = false;
 
   @override
   void initState() {
     super.initState();
-    
+
     _pulseController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 1500),
@@ -30,181 +32,64 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _scanController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 2000),
-    );
-
-    _scanAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _scanController, curve: Curves.easeInOut),
-    );
+    // Iniciar autenticación al entrar en la página
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _authenticate();
+    });
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
-    _scanController.dispose();
     super.dispose();
   }
 
-  void _startFingerprint() {
-    setState(() {
-      _isScanning = true;
-      _attempts++;
-    });
+  Future<void> _authenticate() async {
+    if (_isAuthenticating) return;
 
-    _scanController.forward(from: 0.0);
+    final bool canAuthenticate = await auth.isDeviceSupported();
+    if (!canAuthenticate) {
+      setState(() => _statusMessage = 'Dispositivo no compatible.');
+      return;
+    }
 
-    // Simular escaneo de huella
-    Timer(Duration(seconds: 2), () {
+    try {
+      setState(() {
+        _isAuthenticating = true;
+        _statusMessage = 'Escaneando...';
+      });
+
+      final bool didAuthenticate = await auth.authenticate(
+        localizedReason: 'Por favor, autentícate para acceder a Smart Lock',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+      );
+
       if (mounted) {
-        // Éxito en el escaneo
-        setState(() => _isScanning = false);
-        
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 60,
-                  ),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  '¡Autenticación Exitosa!',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Huella digital verificada',
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-
-        Timer(Duration(seconds: 1), () {
-          if (mounted) {
-            Navigator.of(context).pop();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const UnlockPage()),
-            );
-          }
+        if (didAuthenticate) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const LockSelectionPage()),
+          );
+        } else {
+          setState(() {
+            _statusMessage = 'Autenticación cancelada. Toca para reintentar.';
+          });
+        }
+      }
+    } on PlatformException catch (e) {
+      if (mounted) {
+        setState(() {
+          _statusMessage = 'Error: ${e.message}. Toca para reintentar.';
         });
       }
-    });
-  }
-
-  void _usePIN() {
-    final pinController = TextEditingController();
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: Row(
-          children: [
-            Icon(Icons.dialpad, color: Color(0xFF3B82F6)),
-            SizedBox(width: 10),
-            Text('Ingresa tu PIN'),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: pinController,
-              keyboardType: TextInputType.number,
-              maxLength: 6,
-              obscureText: true,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 10,
-              ),
-              decoration: InputDecoration(
-                hintText: '● ● ● ● ● ●',
-                counterText: '',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(color: Color(0xFF3B82F6), width: 2),
-                ),
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Ingresa tu código PIN de 6 dígitos',
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 12,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF3B82F6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            onPressed: () {
-              if (pinController.text.length == 6) {
-                Navigator.pop(context);
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const UnlockPage()),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('El PIN debe tener 6 dígitos'),
-                    backgroundColor: Colors.orange,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
-              }
-            },
-            child: Text('Confirmar'),
-          ),
-        ],
-      ),
-    );
+    } finally {
+      if (mounted) {
+        setState(() => _isAuthenticating = false);
+      }
+    }
   }
 
   @override
@@ -215,11 +100,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF1E3A8A),
-              Color(0xFF3B82F6),
-              Color(0xFF60A5FA),
-            ],
+            colors: [Color(0xFF1E3A8A), Color(0xFF3B82F6), Color(0xFF60A5FA)],
           ),
         ),
         child: Stack(
@@ -269,7 +150,15 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                           ),
                           child: IconButton(
                             icon: Icon(Icons.arrow_back, color: Colors.white),
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              // Al presionar atrás, ir a la página de login como alternativa final
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const LoginPage(),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         SizedBox(width: 16),
@@ -301,7 +190,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                           ),
                           SizedBox(height: 10),
                           Text(
-                            'Usa tu huella digital para continuar',
+                            _statusMessage,
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.8),
                               fontSize: 16,
@@ -312,31 +201,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
                           // Sensor de huella con animación
                           GestureDetector(
-                            onTap: _isScanning ? null : _startFingerprint,
+                            onTap: _authenticate,
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
-                                // Círculo exterior animado
-                                if (_isScanning)
-                                  AnimatedBuilder(
-                                    animation: _scanAnimation,
-                                    builder: (context, child) {
-                                      return Container(
-                                        width: 200 + (_scanAnimation.value * 50),
-                                        height: 200 + (_scanAnimation.value * 50),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.white.withOpacity(
-                                              0.5 - (_scanAnimation.value * 0.5),
-                                            ),
-                                            width: 3,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-
                                 // Botón principal
                                 ScaleTransition(
                                   scale: _pulseAnimation,
@@ -345,25 +213,28 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                                     height: 180,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      gradient: RadialGradient(
-                                        colors: _isScanning
-                                            ? [
+                                      gradient: _isAuthenticating
+                                          ? const RadialGradient(
+                                              colors: [
                                                 Color(0xFF10B981),
                                                 Color(0xFF059669),
-                                              ]
-                                            : [
-                                                Colors.white.withOpacity(0.2),
-                                                Colors.white.withOpacity(0.1),
                                               ],
-                                      ),
+                                            ) // Gradiente verde cuando está autenticando
+                                          : null,
+                                      color: !_isAuthenticating
+                                          ? Colors.white.withOpacity(0.2)
+                                          : null,
                                       border: Border.all(
                                         color: Colors.white.withOpacity(0.4),
                                         width: 2,
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: (_isScanning ? Colors.green : Colors.blue)
-                                              .withOpacity(0.3),
+                                          color:
+                                              (_isAuthenticating
+                                                      ? Colors.green
+                                                      : Colors.blue)
+                                                  .withOpacity(0.3),
                                           blurRadius: 30,
                                           spreadRadius: 10,
                                         ),
@@ -383,24 +254,18 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                           SizedBox(height: 30),
 
                           // Estado
-                          Text(
-                            _isScanning ? 'Escaneando...' : 'Toca para escanear',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-
-                          if (_isScanning)
+                          if (_isAuthenticating)
                             Padding(
                               padding: const EdgeInsets.only(top: 10),
                               child: SizedBox(
                                 width: 30,
                                 height: 30,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 3,
-                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  strokeWidth: 2,
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
                                 ),
                               ),
                             ),
@@ -431,26 +296,16 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                                 ),
                                 SizedBox(height: 15),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     _buildAlternativeMethod(
-                                      icon: Icons.dialpad,
-                                      label: 'PIN',
-                                      onTap: _usePIN,
-                                    ),
-                                    Container(
-                                      width: 1,
-                                      height: 40,
-                                      color: Colors.white.withOpacity(0.2),
-                                    ),
-                                    _buildAlternativeMethod(
-                                      icon: Icons.face,
-                                      label: 'Face ID',
+                                      icon: Icons.login,
+                                      label: 'Iniciar Sesión',
                                       onTap: () {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text('Face ID no disponible'),
-                                            behavior: SnackBarBehavior.floating,
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const LoginPage(),
                                           ),
                                         );
                                       },
@@ -460,18 +315,6 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                               ],
                             ),
                           ),
-
-                          SizedBox(height: 30),
-
-                          // Intentos
-                          if (_attempts > 0)
-                            Text(
-                              'Intentos: $_attempts',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.6),
-                                fontSize: 12,
-                              ),
-                            ),
                         ],
                       ),
                     ),
@@ -481,7 +324,10 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.green.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),

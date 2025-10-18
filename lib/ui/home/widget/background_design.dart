@@ -83,6 +83,7 @@ class GlassCard extends StatelessWidget {
   final EdgeInsets? padding;
   final double? width;
   final double? height;
+  final EdgeInsets? margin;
 
   const GlassCard({
     super.key,
@@ -90,6 +91,7 @@ class GlassCard extends StatelessWidget {
     this.padding,
     this.width,
     this.height,
+    this.margin,
   });
 
   @override
@@ -98,6 +100,7 @@ class GlassCard extends StatelessWidget {
       width: width,
       height: height,
       padding: padding ?? EdgeInsets.all(20),
+      margin: margin,
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.15),
         borderRadius: BorderRadius.circular(20),

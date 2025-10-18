@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'login_page.dart';
+
+import 'auth_page.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen>
@@ -21,39 +20,43 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 2000),
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: Interval(0.0, 0.6, curve: Curves.easeIn),
       ),
     );
 
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: const Interval(0.0, 0.6, curve: Curves.elasticOut),
+        curve: Interval(0.0, 0.6, curve: Curves.elasticOut),
       ),
     );
 
     _animationController.forward();
 
-    Timer(
-      const Duration(seconds: 3),
-      () => Navigator.pushReplacement(
+    // Navegar a la página de autenticación después de la animación
+    Timer(const Duration(seconds: 3), () => _navigateTo(const AuthPage()));
+  }
+
+  void _navigateTo(Widget page) {
+    if (mounted) {
+      // Verificar si el widget todavía está en el árbol
+      Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const LoginPage(),
+          pageBuilder: (context, animation, secondaryAnimation) => page,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
           transitionDuration: const Duration(milliseconds: 800),
         ),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -66,7 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -94,10 +97,10 @@ class _SplashScreenState extends State<SplashScreen>
             ),
             Positioned(
               bottom: -150,
-              left: -150,
+              left: -100,
               child: Container(
-                width: 400,
-                height: 400,
+                width: 350,
+                height: 350,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -116,7 +119,7 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
             ),
-            
+
             // Contenido principal
             Center(
               child: FadeTransition(
@@ -125,68 +128,71 @@ class _SplashScreenState extends State<SplashScreen>
                   scale: _scaleAnimation,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Icono de candado con círculo brillante
+                    children: <Widget>[
+                      // Icono de candado con animación
                       Container(
-                        width: 140,
-                        height: 140,
+                        padding: EdgeInsets.all(30),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withOpacity(0.15),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.black.withOpacity(0.2),
                               blurRadius: 30,
-                              spreadRadius: 10,
+                              spreadRadius: 5,
                             ),
                           ],
                         ),
-                        child: Center(
-                          child: Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: const Icon(
-                              Icons.lock_rounded,
-                              size: 60,
-                              color: Color(0xFF3B82F6),
-                            ),
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(0.2),
+                          ),
+                          child: Icon(
+                            Icons.lock_outline,
+                            size: 80,
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 40),
-                      
-                      // Título
-                      const Text(
+
+                      // Título con estilo moderno
+                      Text(
                         'SMART LOCK',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 4,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.3),
+                              offset: Offset(0, 4),
+                              blurRadius: 10,
+                            ),
+                          ],
                         ),
                       ),
-                      
+
                       const SizedBox(height: 16),
-                      
+
                       // Subtítulo
                       Text(
-                        'Seguridad Inteligente',
+                        'Control Inteligente de Acceso',
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.9),
                           fontSize: 16,
                           fontWeight: FontWeight.w300,
-                          letterSpacing: 1.5,
+                          letterSpacing: 1,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 60),
-                      
-                      // Indicador de carga
+
+                      // Indicador de carga animado
                       SizedBox(
                         width: 40,
                         height: 40,
@@ -198,6 +204,25 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                     ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Versión en la parte inferior
+            Positioned(
+              bottom: 40,
+              left: 0,
+              right: 0,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Text(
+                  'v1.0.0',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.6),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w300,
                   ),
                 ),
               ),

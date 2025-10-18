@@ -189,6 +189,252 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  // ================= FUNCIONES =================
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+    );
+  }
+
+  void _showManageUsersDialog() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const UsersManagerPage()),
+    );
+  }
+
+  void _showAccessMethodDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Seleccionar Método de Acceso'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<String>(
+              title: const Text('Huella Digital'),
+              value: 'Huella Digital',
+              groupValue: selectedAccessMethod,
+              onChanged: (value) {
+                setState(() => selectedAccessMethod = value!);
+                Navigator.pop(context);
+                _showSnackBar("Método de acceso cambiado a Huella Digital");
+              },
+            ),
+            RadioListTile<String>(
+              title: const Text('Código PIN'),
+              value: 'Código PIN',
+              groupValue: selectedAccessMethod,
+              onChanged: (value) {
+                setState(() => selectedAccessMethod = value!);
+                Navigator.pop(context);
+                _showSnackBar("Método de acceso cambiado a Código PIN");
+              },
+            ),
+            RadioListTile<String>(
+              title: const Text('Huella + PIN'),
+              value: 'Huella + PIN',
+              groupValue: selectedAccessMethod,
+              onChanged: (value) {
+                setState(() => selectedAccessMethod = value!);
+                Navigator.pop(context);
+                _showSnackBar("Método de acceso cambiado a Huella + PIN");
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showFingerprintDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Huella Digital'),
+        content: const Text('Sensor de huella configurado correctamente.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _testLockConnection() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Prueba de Cerradura'),
+        content: const Text('Cerradura conectada correctamente.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showChangePINDialog() {
+    final currentPinController = TextEditingController();
+    final newPinController = TextEditingController();
+    final confirmPinController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: const Text('Cambiar PIN'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: currentPinController,
+              obscureText: true,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'PIN Actual'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: newPinController,
+              obscureText: true,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Nuevo PIN'),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: confirmPinController,
+              obscureText: true,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(labelText: 'Confirmar PIN'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (currentPinController.text.isEmpty ||
+                  newPinController.text.isEmpty ||
+                  confirmPinController.text.isEmpty) {
+                _showSnackBar("Por favor, completa todos los campos.");
+                return;
+              }
+              if (newPinController.text != confirmPinController.text) {
+                _showSnackBar("Los nuevos PIN no coinciden.");
+                return;
+              }
+              if (newPinController.text.length != 6) {
+                _showSnackBar("El PIN debe tener 6 dígitos.");
+                return;
+              }
+              // Aquí iría la lógica para verificar el PIN actual y guardar el nuevo.
+              // Por ahora, simulamos el éxito.
+              Navigator.pop(context);
+              _showSnackBar("PIN actualizado con éxito");
+            },
+            child: const Text('Guardar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showNetworkDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Configuración de Red'),
+        content: const Text('Tu red SmartLock está conectada correctamente.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAboutDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Acerca de Smart Lock'),
+        content: const Text(
+          'Versión 1.0.0\nAplicación de control de cerradura inteligente.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showHelpDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Ayuda y Soporte'),
+        content: const Text(
+          'Para asistencia, contacta a soporte@smartlock.com.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showResetDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Restablecer Configuración'),
+        content: const Text(
+          '¿Deseas restablecer todas las configuraciones por defecto?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () {
+              setState(() {
+                notificationsEnabled = true;
+                soundEnabled = true;
+                selectedAccessMethod = 'Huella Digital';
+                autoLockDuration = 30;
+              });
+              Navigator.pop(context);
+              _showSnackBar("Configuración restablecida correctamente.");
+            },
+            child: const Text('Restablecer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ================= COMPONENTES ==================
+
   Widget _buildSettingsCard({
     required String title,
     required List<Widget> children,
@@ -199,11 +445,7 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
+          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8),
         ],
       ),
       child: Padding(
@@ -271,24 +513,4 @@ class _SettingsPageState extends State<SettingsPage> {
       onChanged: onChanged,
     );
   }
-
-  // Métodos funcionales (igual que en tu versión previa)
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
-    );
-  }
-
-  void _showManageUsersDialog() => Navigator.push(
-    context,
-    MaterialPageRoute(builder: (_) => const UsersManagerPage()),
-  );
-  void _showAccessMethodDialog() {}
-  void _showFingerprintDialog() {}
-  void _testLockConnection() {}
-  void _showChangePINDialog() {}
-  void _showNetworkDialog() {}
-  void _showAboutDialog() {}
-  void _showHelpDialog() {}
-  void _showResetDialog() {}
 }

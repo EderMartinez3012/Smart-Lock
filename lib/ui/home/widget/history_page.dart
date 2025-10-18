@@ -9,7 +9,7 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   String _selectedFilter = 'Todos';
-  
+
   final Map<String, List<Map<String, dynamic>>> historyData = {
     "Hoy": [
       {
@@ -95,7 +95,7 @@ class _HistoryPageState extends State<HistoryPage> {
     if (_selectedFilter == 'Todos') {
       return historyData.entries.toList();
     }
-    
+
     var filtered = <String, List<Map<String, dynamic>>>{};
     historyData.forEach((date, events) {
       var filteredEvents = events.where((event) {
@@ -104,12 +104,12 @@ class _HistoryPageState extends State<HistoryPage> {
         if (_selectedFilter == 'Bloqueados') return event['status'] == 'locked';
         return true;
       }).toList();
-      
+
       if (filteredEvents.isNotEmpty) {
         filtered[date] = filteredEvents;
       }
     });
-    
+
     return filtered.entries.toList();
   }
 
@@ -118,13 +118,17 @@ class _HistoryPageState extends State<HistoryPage> {
   }
 
   int get successfulEvents {
-    return historyData.values.fold(0, (sum, list) => 
-      sum + list.where((e) => e['status'] == 'success').length);
+    return historyData.values.fold(
+      0,
+      (sum, list) => sum + list.where((e) => e['status'] == 'success').length,
+    );
   }
 
   int get deniedEvents {
-    return historyData.values.fold(0, (sum, list) => 
-      sum + list.where((e) => e['status'] == 'denied').length);
+    return historyData.values.fold(
+      0,
+      (sum, list) => sum + list.where((e) => e['status'] == 'denied').length,
+    );
   }
 
   @override
@@ -135,10 +139,7 @@ class _HistoryPageState extends State<HistoryPage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1E3A8A),
-              Color(0xFFF8FAFC),
-            ],
+            colors: [Color(0xFF1E3A8A), Color(0xFFF8FAFC)],
             stops: [0.0, 0.3],
           ),
         ),
@@ -325,7 +326,9 @@ class _HistoryPageState extends State<HistoryPage> {
                   Text('Exportar Historial'),
                 ],
               ),
-              content: Text('¿Deseas exportar el historial completo en formato PDF?'),
+              content: Text(
+                '¿Deseas exportar el historial completo en formato PDF?',
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
@@ -390,10 +393,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
         Text(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
-          ),
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
         ),
       ],
     );
@@ -419,9 +419,7 @@ class _HistoryPageState extends State<HistoryPage> {
       selectedColor: Color(0xFF3B82F6),
       checkmarkColor: Colors.white,
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
 
@@ -491,11 +489,7 @@ class _HistoryPageState extends State<HistoryPage> {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                 ),
-                child: Icon(
-                  iconData,
-                  color: iconColor,
-                  size: 14,
-                ),
+                child: Icon(iconData, color: iconColor, size: 14),
               ),
             ),
           ],
@@ -514,10 +508,7 @@ class _HistoryPageState extends State<HistoryPage> {
             SizedBox(height: 4),
             Text(
               item['action'],
-              style: TextStyle(
-                color: Colors.grey.shade600,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
             ),
             SizedBox(height: 4),
             Row(
@@ -530,10 +521,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 SizedBox(width: 4),
                 Text(
                   item['method'],
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                 ),
               ],
             ),
@@ -543,11 +531,7 @@ class _HistoryPageState extends State<HistoryPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Icon(
-              Icons.access_time,
-              size: 16,
-              color: Colors.grey.shade500,
-            ),
+            Icon(Icons.access_time, size: 16, color: Colors.grey.shade500),
             SizedBox(height: 4),
             Text(
               item['time'],
@@ -629,8 +613,8 @@ class _HistoryPageState extends State<HistoryPage> {
               item['status'] == 'success'
                   ? 'Acceso Exitoso'
                   : item['status'] == 'denied'
-                      ? 'Acceso Denegado'
-                      : 'Bloqueado',
+                  ? 'Acceso Denegado'
+                  : 'Bloqueado',
             ),
             SizedBox(height: 12),
             _buildDetailRow(Icons.location_on, 'Ubicación', 'Puerta Principal'),
@@ -696,19 +680,13 @@ class _HistoryPageState extends State<HistoryPage> {
         SizedBox(width: 12),
         Text(
           '$label:',
-          style: TextStyle(
-            color: Colors.grey.shade600,
-            fontSize: 14,
-          ),
+          style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
         ),
         SizedBox(width: 8),
         Expanded(
           child: Text(
             value,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             textAlign: TextAlign.right,
           ),
         ),
