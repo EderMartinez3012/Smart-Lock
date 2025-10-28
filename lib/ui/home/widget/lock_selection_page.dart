@@ -76,10 +76,13 @@ class _LockSelectionPageState extends State<LockSelectionPage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Text(
-                  'Elige el dispositivo que quieres controlar.',
-                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    'Elige el dispositivo que quieres controlar.',
+                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                  ),
                 ),
               ),
               Expanded(

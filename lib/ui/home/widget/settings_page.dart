@@ -301,30 +301,32 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         title: const Text('Cambiar PIN'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: currentPinController,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'PIN Actual'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: newPinController,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Nuevo PIN'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: confirmPinController,
-              obscureText: true,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(labelText: 'Confirmar PIN'),
-            ),
-          ],
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: currentPinController,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'PIN Actual'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: newPinController,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Nuevo PIN'),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: confirmPinController,
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Confirmar PIN'),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -333,20 +335,6 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              if (currentPinController.text.isEmpty ||
-                  newPinController.text.isEmpty ||
-                  confirmPinController.text.isEmpty) {
-                _showSnackBar("Por favor, completa todos los campos.");
-                return;
-              }
-              if (newPinController.text != confirmPinController.text) {
-                _showSnackBar("Los nuevos PIN no coinciden.");
-                return;
-              }
-              if (newPinController.text.length != 6) {
-                _showSnackBar("El PIN debe tener 6 dígitos.");
-                return;
-              }
               // Aquí iría la lógica para verificar el PIN actual y guardar el nuevo.
               // Por ahora, simulamos el éxito.
               Navigator.pop(context);

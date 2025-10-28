@@ -266,7 +266,9 @@ class _GuestAccessPageState extends State<GuestAccessPage> {
                 child: QrImageView(
                   data: qrData,
                   version: QrVersions.auto,
-                  size: 200.0,
+                  size:
+                      MediaQuery.of(context).size.width *
+                      0.5, // Usar el 50% del ancho de la pantalla
                 ),
               ),
               const SizedBox(height: 20),

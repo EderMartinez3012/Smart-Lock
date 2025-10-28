@@ -39,8 +39,12 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController.forward();
 
-    // Navegar a la página de autenticación después de la animación
-    Timer(const Duration(seconds: 3), () => _navigateTo(const AuthPage()));
+    // Navegar a la página de autenticación cuando la animación termine.
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _navigateTo(const AuthPage());
+      }
+    });
   }
 
   void _navigateTo(Widget page) {
