@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final AuthController authController = AuthController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -43,32 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         child: Stack(
           children: [
-            // Círculos decorativos
-            Positioned(
-              top: -80,
-              left: -80,
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -100,
-              right: -100,
-              child: Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-
             SafeArea(
               child: Column(
                 children: [
@@ -232,14 +207,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ],
                                   ),
                                   child: ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: _isLoading ? null : () async {
                                       if (nameController.text.isEmpty ||
                                           emailController.text.isEmpty ||
                                           passController.text.isEmpty) {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
                                             content: Text("Por favor completa todos los campos"),
-                                            backgroundColor: Colors.orange.shade400,
+                                            backgroundColor: Colors.orange,
                                             behavior: SnackBarBehavior.floating,
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(10),
@@ -248,50 +223,68 @@ class _RegisterPageState extends State<RegisterPage> {
                                         );
                                         return;
                                       }
-
+ 
                                       if (passController.text != confirmPassController.text) {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
                                             content: Text("Las contraseñas no coinciden"),
-                                            backgroundColor: Colors.red.shade400,
+                                            backgroundColor: Colors.red,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                        return;
+                                      }
+ 
+                                      setState(() => _isLoading = true);
+ 
+                                      final userCredential = await authController.register(
+                                        nameController.text.trim(),
+                                        emailController.text.trim(),
+                                        passController.text.trim(),
+                                      );
+ 
+                                      setState(() => _isLoading = false);
+ 
+                                      if (userCredential != null) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: const Row(
+                                              children: [
+                                                Icon(Icons.check_circle, color: Colors.white),
+                                                SizedBox(width: 12),
+                                                Text("Cuenta creada exitosamente"),
+                                              ],
+                                            ),
+                                            backgroundColor: Colors.green,
                                             behavior: SnackBarBehavior.floating,
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(10),
                                             ),
                                           ),
                                         );
-                                        return;
-                                      }
-
-                                      authController.register(
-                                        nameController.text,
-                                        emailController.text,
-                                        passController.text,
-                                      );
-
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Row(
-                                            children: [
-                                              Icon(Icons.check_circle, color: Colors.white),
-                                              SizedBox(width: 12),
-                                              Text("Cuenta creada exitosamente"),
-                                            ],
+                                        Future.delayed(const Duration(seconds: 1), () {
+                                          if (mounted) { // Asegura que el widget todavía está en el árbol de widgets
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(builder: (_) => const LoginPage()),
+                                            );
+                                          }
+                                        });
+                                      } else {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: const Text("Error al registrar. El correo puede que ya esté en uso."),
+                                            backgroundColor: Colors.red,
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
                                           ),
-                                          backgroundColor: Colors.green.shade400,
-                                          behavior: SnackBarBehavior.floating,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(10),
-                                          ),
-                                        ),
-                                      );
-
-                                      Future.delayed(Duration(seconds: 1), () {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(builder: (_) => const LoginPage()),
                                         );
-                                      });
+                                      }
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.transparent,
@@ -300,15 +293,21 @@ class _RegisterPageState extends State<RegisterPage> {
                                         borderRadius: BorderRadius.circular(15),
                                       ),
                                     ),
-                                    child: const Text(
-                                      "REGISTRARSE",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        letterSpacing: 1.5,
-                                      ),
-                                    ),
+                                    child: _isLoading
+                                        ? const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                          )
+                                        : const Text(
+                                            "REGISTRARSE",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 1.5,
+                                            ),
+                                          ),
                                   ),
                                 ),
                               ],

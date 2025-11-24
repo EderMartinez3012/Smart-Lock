@@ -443,8 +443,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
               onPressed: () {
                 if (nameController.text.isNotEmpty &&
                     emailController.text.isNotEmpty) {
-                  setState(() {
-                    users.add({
+                  final newUser = {
                       'name': nameController.text,
                       'email': emailController.text,
                       'role': selectedRole,
@@ -454,7 +453,10 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                       'fingerprint': enableFingerprint,
                       'pin': enablePIN,
                       'lastAccess': 'Nunca',
-                    });
+                    };
+                  // Llama al setState de la página principal para redibujar la lista.
+                  this.setState(() {
+                    users.add(newUser);
                   });
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(

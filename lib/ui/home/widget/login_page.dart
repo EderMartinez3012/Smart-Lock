@@ -15,6 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final passController = TextEditingController(text: "123456");
   final AuthController authController = AuthController();
   bool _obscurePassword = true;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -36,32 +37,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
         child: Stack(
           children: [
-            // Círculos decorativos
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -80,
-              left: -80,
-              child: Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-
             // Contenido principal
             SafeArea(
               child: Center(
@@ -190,12 +165,16 @@ class _LoginPageState extends State<LoginPage> {
                                 ],
                               ),
                               child: ElevatedButton(
-                                onPressed: () {
-                                  bool success = authController.login(
-                                    emailController.text,
-                                    passController.text,
+                                onPressed: _isLoading ? null : () async {
+                                  setState(() => _isLoading = true);
+                                  bool success = await authController.login(
+                                    emailController.text.trim(),
+                                    passController.text.trim(),
                                   );
+                                  setState(() => _isLoading = false);
+
                                   if (success) {
+                                    if (!mounted) return;
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
@@ -213,9 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                                         backgroundColor: Colors.red,
                                         behavior: SnackBarBehavior.floating,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10,
-                                          ),
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
                                       ),
                                     );
@@ -228,15 +205,21 @@ class _LoginPageState extends State<LoginPage> {
                                     borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
-                                child: const Text(
-                                  'INICIAR SESIÓN',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1.2,
-                                  ),
-                                ),
+                                child: _isLoading
+                                    ? const SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                      )
+                                    : const Text(
+                                        'INICIAR SESIÓN',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.2,
+                                        ),
+                                      ),
                               ),
                             ),
                           ],

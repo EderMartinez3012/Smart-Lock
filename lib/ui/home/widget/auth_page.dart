@@ -105,31 +105,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
         ),
         child: Stack(
           children: [
-            // Círculos decorativos
-            Positioned(
-              top: -100,
-              right: -100,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -150,
-              left: -50,
-              child: Container(
-                width: 350,
-                height: 350,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.05),
-                ),
-              ),
-            ),
+            
 
             SafeArea(
               child: Column(
