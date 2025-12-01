@@ -26,7 +26,7 @@ class AuthController {
       return userCredential;
     } on FirebaseAuthException catch (e) {
       print('Error en el registro: ${e.message}');
-      return null;
+      rethrow; // Rethrow the FirebaseAuthException
     }
   }
 

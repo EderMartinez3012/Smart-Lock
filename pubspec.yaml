@@ -22,9 +22,9 @@ dependencies:
   sleek_circular_slider: ^2.1.0
 
   # Firebase packages (alineados al mismo nivel que los anteriores)
-  firebase_core: ^3.0.0
+  firebase_core: ^3.4.0
   firebase_auth: ^5.1.2
-  cloud_firestore: ^5.1.0
+  cloud_firestore: ^5.4.0
 
 dev_dependencies:
   flutter_test:
