@@ -94,6 +94,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -110,8 +111,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               top: -100,
               right: -100,
               child: Container(
-                width: 300,
-                height: 300,
+                width: screenWidth * 0.8,
+                height: screenWidth * 0.8,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -122,8 +123,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
               bottom: -150,
               left: -50,
               child: Container(
-                width: 350,
-                height: 350,
+                width: screenWidth * 0.9,
+                height: screenWidth * 0.9,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -209,8 +210,8 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                                 ScaleTransition(
                                   scale: _pulseAnimation,
                                   child: Container(
-                                    width: 180,
-                                    height: 180,
+                                    width: screenWidth * 0.45,
+                                    height: screenWidth * 0.45,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       gradient: _isAuthenticating

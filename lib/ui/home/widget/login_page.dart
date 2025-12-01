@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -41,8 +42,8 @@ class _LoginPageState extends State<LoginPage> {
               top: -100,
               right: -100,
               child: Container(
-                width: 300,
-                height: 300,
+                width: screenWidth * 0.8,
+                height: screenWidth * 0.8,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -53,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
               bottom: -80,
               left: -80,
               child: Container(
-                width: 250,
-                height: 250,
+                width: screenWidth * 0.7,
+                height: screenWidth * 0.7,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -72,8 +73,8 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       // Logo y título
                       Container(
-                        width: 100,
-                        height: 100,
+                        width: screenWidth * 0.25,
+                        height: screenWidth * 0.25,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,

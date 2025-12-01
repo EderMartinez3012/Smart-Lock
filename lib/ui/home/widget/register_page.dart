@@ -29,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -48,8 +49,8 @@ class _RegisterPageState extends State<RegisterPage> {
               top: -80,
               left: -80,
               child: Container(
-                width: 200,
-                height: 200,
+                width: screenWidth * 0.5,
+                height: screenWidth * 0.5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -60,8 +61,8 @@ class _RegisterPageState extends State<RegisterPage> {
               bottom: -100,
               right: -100,
               child: Container(
-                width: 250,
-                height: 250,
+                width: screenWidth * 0.7,
+                height: screenWidth * 0.7,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),

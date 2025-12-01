@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smartlock/ui/widgets/connection_status.dart';
+import 'package:smartlock/ui/widgets/glass_card.dart';
 import 'package:smartlock/models/lock_model.dart';
 import 'package:smartlock/ui/home/widget/background_design.dart';
 import 'login_page.dart';
@@ -68,6 +70,7 @@ class _UnlockPageState extends State<UnlockPage>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: ModernGradientBackground(
         child: Stack(
@@ -155,8 +158,8 @@ class _UnlockPageState extends State<UnlockPage>
                             child: GestureDetector(
                               onTap: _toggleLock,
                               child: Container(
-                                width: 200,
-                                height: 200,
+                                width: screenWidth * 0.5,
+                                height: screenWidth * 0.5,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   gradient: RadialGradient(
@@ -274,6 +277,7 @@ class _UnlockPageState extends State<UnlockPage>
                                 Container(
                                   width: 1,
                                   height: 40,
+   
                                   color: Colors.white.withOpacity(0.2),
                                 ),
                                 _buildQuickAction(

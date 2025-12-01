@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:smartlock/ui/widgets/gradient_button.dart';
+import 'package:smartlock/ui/widgets/circle_icon_button.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:smartlock/models/guest_pass_model.dart';

@@ -71,6 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -91,8 +92,8 @@ class _SplashScreenState extends State<SplashScreen>
               top: -100,
               right: -100,
               child: Container(
-                width: 300,
-                height: 300,
+                width: screenWidth * 0.8,
+                height: screenWidth * 0.8,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -103,8 +104,8 @@ class _SplashScreenState extends State<SplashScreen>
               bottom: -150,
               left: -100,
               child: Container(
-                width: 350,
-                height: 350,
+                width: screenWidth * 0.9,
+                height: screenWidth * 0.9,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.05),
@@ -115,8 +116,8 @@ class _SplashScreenState extends State<SplashScreen>
               top: 200,
               left: -50,
               child: Container(
-                width: 150,
-                height: 150,
+                width: screenWidth * 0.4,
+                height: screenWidth * 0.4,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.white.withOpacity(0.03),
