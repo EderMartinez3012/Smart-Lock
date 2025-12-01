@@ -131,6 +131,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                 ),
               ),
             ),
+            
 
             SafeArea(
               child: Column(

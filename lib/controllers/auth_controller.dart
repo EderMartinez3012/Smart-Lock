@@ -1,29 +1,43 @@
-import '../models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthController {
-  UserModel? _user;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Usuario de prueba por defecto
-  AuthController() {
-    _user = UserModel(
-      name: "Usuario de Prueba",
-      email: "test@correo.com",
-      password: "123456",
-    );
-  }
+  Future<UserCredential?> register(
+      String name, String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
 
-  void register(String name, String email, String password) {
-    _user = UserModel(name: name, email: email, password: password);
-    print("Usuario registrado: ${_user!.email}");
-  }
+      // Actualiza el perfil de Firebase con el nombre del usuario.
+      await userCredential.user?.updateDisplayName(name);
 
-  bool login(String email, String password) {
-    if (_user != null && _user!.email == email && _user!.password == password) {
-      print("Inicio de sesión exitoso");
-      return true;
+      // Guarda la información del usuario en Firestore.
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'name': name,
+        'email': email,
+        'uid': userCredential.user!.uid,
+        'createdAt': Timestamp.now(),
+      });
+
+      print("Usuario registrado: ${userCredential.user?.email}");
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      print('Error en el registro: ${e.message}');
+      return null;
     }
-    print("Error de inicio de sesión: credenciales incorrectas");
-    return false;
+  }
+
+  Future<bool> login(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      print("Usuario ha iniciado sesión: $email");
+      return true;
+    } on FirebaseAuthException catch (e) {
+      print('Error en el inicio de sesión: ${e.message}');
+      return false;
+    }
   }
 }
-
