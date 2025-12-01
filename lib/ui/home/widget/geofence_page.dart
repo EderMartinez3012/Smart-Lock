@@ -157,7 +157,7 @@ class _GeofencePageState extends State<GeofencePage> {
                             'Activa el bloqueo y desbloqueo automático por ubicación.',
                           ),
                           value: _isGeofenceEnabled,
-                          activeColor: accentPink,
+                          activeThumbColor: accentPink,
                           onChanged: (value) {
                             setState(() => _isGeofenceEnabled = value);
                             _speak(

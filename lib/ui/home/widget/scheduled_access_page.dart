@@ -99,7 +99,7 @@ class _ScheduledAccessPageState extends State<ScheduledAccessPage> {
                           },
                         ),
                       );
-                    }).toList(),
+                    }),
                     TextButton.icon(
                       icon: const Icon(Icons.add),
                       label: const Text('Añadir franja horaria'),
@@ -214,7 +214,7 @@ class _ScheduledAccessPageState extends State<ScheduledAccessPage> {
                             'El usuario solo podrá acceder en las horas definidas.',
                           ),
                           value: _isScheduleEnabled,
-                          activeColor: accentPink,
+                          activeThumbColor: accentPink,
                           onChanged: (value) =>
                               setState(() => _isScheduleEnabled = value),
                         ),

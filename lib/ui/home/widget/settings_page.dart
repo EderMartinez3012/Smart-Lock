@@ -506,7 +506,7 @@ class _SettingsPageState extends State<SettingsPage> {
       subtitle: subtitle != null
           ? Text(subtitle, style: TextStyle(color: Colors.grey.shade600))
           : null,
-      activeColor: const Color(0xFF3B82F6),
+      activeThumbColor: const Color(0xFF3B82F6),
       value: value,
       onChanged: onChanged,
     );

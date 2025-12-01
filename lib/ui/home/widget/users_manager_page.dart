@@ -385,7 +385,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                 ),
                 SizedBox(height: 16),
                 DropdownButtonFormField<String>(
-                  value: selectedRole,
+                  initialValue: selectedRole,
                   decoration: InputDecoration(
                     labelText: 'Rol',
                     prefixIcon: Icon(Icons.security),
@@ -407,7 +407,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                   title: Text('Habilitar Huella Digital'),
                   secondary: Icon(Icons.fingerprint),
                   value: enableFingerprint,
-                  activeColor: Color(0xFF3B82F6),
+                  activeThumbColor: Color(0xFF3B82F6),
                   onChanged: (value) {
                     setState(() {
                       enableFingerprint = value;
@@ -418,7 +418,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                   title: Text('Habilitar PIN'),
                   secondary: Icon(Icons.dialpad),
                   value: enablePIN,
-                  activeColor: Color(0xFF3B82F6),
+                  activeThumbColor: Color(0xFF3B82F6),
                   onChanged: (value) {
                     setState(() {
                       enablePIN = value;
@@ -589,7 +589,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                 title: Text('Huella Digital'),
                 secondary: Icon(Icons.fingerprint),
                 value: fingerprint,
-                activeColor: Color(0xFF3B82F6),
+                activeThumbColor: Color(0xFF3B82F6),
                 onChanged: (value) {
                   setState(() {
                     fingerprint = value;
@@ -600,7 +600,7 @@ class _UsersManagerPageState extends State<UsersManagerPage> {
                 title: Text('Código PIN'),
                 secondary: Icon(Icons.dialpad),
                 value: pin,
-                activeColor: Color(0xFF3B82F6),
+                activeThumbColor: Color(0xFF3B82F6),
                 onChanged: (value) {
                   setState(() {
                     pin = value;

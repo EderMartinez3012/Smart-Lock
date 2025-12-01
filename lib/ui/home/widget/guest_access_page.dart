@@ -188,7 +188,7 @@ class _GuestAccessPageState extends State<GuestAccessPage> {
                   ),
                   const SizedBox(height: 20),
                   DropdownButtonFormField<Duration>(
-                    value: selectedDuration,
+                    initialValue: selectedDuration,
                     decoration: const InputDecoration(
                       labelText: 'Validez del Pase',
                       icon: Icon(Icons.timer),
